@@ -6,4 +6,5 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @MapperScan("moe.tree.eduservice.mapper")
 public class EduConfig {
+
 }
