@@ -34,3 +34,5 @@ tem/
 
 #rebel
 *rebel.xml*
+
+ossconfig.properties

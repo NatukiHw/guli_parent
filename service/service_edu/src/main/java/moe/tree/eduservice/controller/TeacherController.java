@@ -9,7 +9,6 @@ import moe.tree.commontuils.R;
 import moe.tree.eduservice.entity.Teacher;
 import moe.tree.eduservice.entity.vo.TeacherQuery;
 import moe.tree.eduservice.service.TeacherService;
-import moe.tree.eduservice.service.impl.TeacherServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class TeacherController {
 
 	@Autowired
-	private TeacherServiceImpl teacherService;
+	private TeacherService teacherService;
 
 //	@GetMapping("/")
 //	public R findAllTeacher() {
@@ -55,13 +54,14 @@ public class TeacherController {
 //		return R.ok().data("total", total).data("rows", records);
 //	}
 
-	@RequestMapping(value = "/", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = "/view", method = {RequestMethod.GET, RequestMethod.POST})
 	public R pageTeacherCondition(long page, long limit, @RequestBody(required = false) TeacherQuery teacherQuery) {
 		Page<Teacher> pageTeacher = new Page<>(page, limit);
 
-		QueryWrapper<Teacher> wrapper = null;
+		QueryWrapper<Teacher> wrapper = new QueryWrapper<>();
+		wrapper.orderByDesc("gmt_create");
+
 		if(teacherQuery != null) {
-			wrapper =  new QueryWrapper<>();
 			String name = teacherQuery.getName();
 			Integer level = teacherQuery.getLevel();
 			String begin = teacherQuery.getBegin();
@@ -87,5 +87,31 @@ public class TeacherController {
 		List<Teacher> records = pageTeacher.getRecords();
 
 		return R.ok().data("total", total).data("rows", records);
+	}
+
+	@PostMapping("/")
+	public R addTeacher(@RequestBody Teacher teacher) {
+		boolean save = teacherService.save(teacher);
+		if(save) {
+			return R.ok();
+		} else {
+			return R.error();
+		}
+	}
+
+	@GetMapping("/{id}")
+	public R getTeacher(@PathVariable String id) {
+		Teacher teacher = teacherService.getById(id);
+		return R.ok().data("teacher", teacher);
+	}
+
+	@PutMapping("/{id}")
+	public R updateTeacher(@RequestBody Teacher teacher) {
+		boolean flag = teacherService.updateById(teacher);
+		if(flag) {
+			return R.ok();
+		} else {
+			return R.error();
+		}
 	}
 }

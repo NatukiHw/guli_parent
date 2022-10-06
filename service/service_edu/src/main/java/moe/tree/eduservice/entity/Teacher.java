@@ -60,7 +60,7 @@ public class Teacher implements Serializable {
     private Integer sort;
 
     @ApiModelProperty("逻辑删除 1已删除 0未删除")
-    @TableField("is_deleted")
+    @TableField(value = "is_deleted", fill = FieldFill.INSERT)
     @TableLogic
     private Byte isDeleted;
 

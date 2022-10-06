@@ -84,11 +84,11 @@
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 		</dependency>
-		<!--httpclient-->
-		<dependency>
-			<groupId>org.apache.httpcomponents.client5</groupId>
-			<artifactId>httpclient5</artifactId>
-		</dependency>
+<!--		&lt;!&ndash;httpclient&ndash;&gt;-->
+<!--		<dependency>-->
+<!--			<groupId>org.apache.httpcomponents.client5</groupId>-->
+<!--			<artifactId>httpclient5</artifactId>-->
+<!--		</dependency>-->
 		<!--commons-io-->
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -121,5 +121,6 @@
 	<modules>
 		<module>service_edu</module>
 		<module>service_edu</module>
+		<module>service_oss</module>
 	</modules>
 </project>

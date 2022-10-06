@@ -11,8 +11,9 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
 
 	@Override
 	public void insertFill(MetaObject metaObject) {
-		this.strictInsertFill(metaObject, "gmtCreate", LocalDateTime.class, LocalDateTime.now()); // 起始版本 3.3.0(推荐使用)
-		this.strictUpdateFill(metaObject, "gmtModified", LocalDateTime.class, LocalDateTime.now()); // 起始版本 3.3.0(推荐)
+		this.strictInsertFill(metaObject, "gmtCreate", LocalDateTime.class, LocalDateTime.now());
+		this.strictInsertFill(metaObject, "gmtModified", LocalDateTime.class, LocalDateTime.now());
+		this.strictInsertFill(metaObject, "isDeleted", Byte.class, Byte.valueOf((byte)0));
 	}
 
 	@Override
