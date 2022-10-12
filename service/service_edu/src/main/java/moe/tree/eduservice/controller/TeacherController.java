@@ -27,11 +27,11 @@ public class TeacherController {
 	@Autowired
 	private TeacherService teacherService;
 
-//	@GetMapping("/")
-//	public R findAllTeacher() {
-//		List<Teacher> list = teacherService.list();
-//		return R.ok().data("items", list);
-//	}
+	@GetMapping("/")
+	public R findAllTeacher() {
+		List<Teacher> list = teacherService.list();
+		return R.ok().data("items", list);
+	}
 
 	@DeleteMapping("/{id}")
 	public R removeTeacher(@PathVariable String id) {
@@ -105,7 +105,7 @@ public class TeacherController {
 		return R.ok().data("teacher", teacher);
 	}
 
-	@PutMapping("/{id}")
+	@PutMapping("/")
 	public R updateTeacher(@RequestBody Teacher teacher) {
 		boolean flag = teacherService.updateById(teacher);
 		if(flag) {

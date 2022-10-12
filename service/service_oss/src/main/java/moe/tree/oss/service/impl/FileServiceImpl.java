@@ -2,6 +2,7 @@ package moe.tree.oss.service.impl;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
+import com.aliyuncs.utils.StringUtils;
 import moe.tree.oss.service.FileService;
 import moe.tree.oss.utils.ConstantPropertiesUtil;
 import org.joda.time.DateTime;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @Service
 public class FileServiceImpl implements FileService {
 	@Override
-	public String uploadAvatar(MultipartFile file) {
+	public String uploadAvatar(String tag, MultipartFile file) {
 		//获取阿里云存储相关常量
 		String endPoint = ConstantPropertiesUtil.END_POINT;
 		String accessKeyId = ConstantPropertiesUtil.ACCESS_KEY_ID;
@@ -27,7 +28,11 @@ public class FileServiceImpl implements FileService {
 			OSS ossClient = new OSSClientBuilder().build(endPoint, accessKeyId, accessKeySecret);
 
 			InputStream inputStream = file.getInputStream();
-			String filePath = new DateTime().toString("yyyy/MM/dd");
+			String filePath = "";
+			if(!StringUtils.isEmpty(tag)) {
+				filePath += tag + "/";
+			}
+			filePath += new DateTime().toString("yyyy/MM/dd");
 
 			String original = file.getOriginalFilename();
 			String fileName = UUID.randomUUID().toString();

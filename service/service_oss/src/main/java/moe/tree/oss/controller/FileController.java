@@ -24,8 +24,15 @@ public class FileController {
 	 */
 	@ApiOperation(value = "头像上传")
 	@PostMapping("/avatar/upload")
-	public R upload(@ApiParam(name = "file", value = "文件", required = true) @RequestParam("file") MultipartFile file) {
-		String uploadUrl = fileService.uploadAvatar(file);
+	public R uploadAvatar(@ApiParam(name = "file", value = "文件", required = true) @RequestParam("file") MultipartFile file) {
+		String uploadUrl = fileService.uploadAvatar("avatar", file);
+		return R.ok().message("上传成功").data("url", uploadUrl);
+	}
+
+	@ApiOperation(value = "课程封面上传")
+	@PostMapping("/course/cover/upload")
+	public R uploadCourseCover(@ApiParam(name = "file", value = "文件", required = true) @RequestParam("file") MultipartFile file) {
+		String uploadUrl = fileService.uploadAvatar("course_cover", file);
 		return R.ok().message("上传成功").data("url", uploadUrl);
 	}
 }
