@@ -59,5 +59,5 @@ public class Chapter implements Serializable {
 
     @TableField(value = "is_deleted", fill = FieldFill.INSERT)
     @TableLogic
-    private Boolean isDeleted;
+    private Byte isDeleted;
 }

@@ -9,6 +9,7 @@ import moe.tree.eduservice.mapper.ChapterMapper;
 import moe.tree.eduservice.service.ChapterService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import moe.tree.eduservice.service.VideoService;
+import moe.tree.servicebase.exception.GuliException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,5 +58,17 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
 			rntList.add(chapterVo);
 		}
 		return rntList;
+	}
+
+	@Override
+	public boolean deleteChapter(String chapterId) {
+		QueryWrapper<Video> wrapper = new QueryWrapper<>();
+		wrapper.eq("chapter_id", chapterId);
+		long cnt = videoService.count(wrapper);
+		if(cnt > 0) {
+			throw new GuliException(20001, "该章节下存在小节, 不能删除");
+		}
+		int result = baseMapper.deleteById(chapterId);
+		return result > 0;
 	}
 }

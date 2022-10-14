@@ -2,4 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="moe.tree.eduservice.mapper.CourseMapper">
 
+	<select id="getCoursePublishVo" resultType="moe.tree.eduservice.entity.vo.CoursePublishVo">
+		SELECT
+			c.title,
+			c.cover,
+			c.lesson_num AS lessonNum,
+			CONVERT(c.price, decimal(10,2)) AS price,
+			s1.title AS parentSubject,
+			s2.title AS childrenSubject,
+			t.name AS teacherName
+		FROM
+			edu_course AS c
+				LEFT JOIN edu_teacher t ON c.teacher_id = t.id
+				LEFT JOIN edu_subject s1 ON c.subject_parent_id = s1.id
+				LEFT JOIN edu_subject s2 ON c.subject_id = s2.id
+		WHERE
+			c.id = #{courseId};
+	</select>
+
 </mapper>

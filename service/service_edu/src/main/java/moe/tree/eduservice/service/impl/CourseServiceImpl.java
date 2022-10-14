@@ -3,6 +3,7 @@ package moe.tree.eduservice.service.impl;
 import com.fasterxml.jackson.databind.util.BeanUtil;
 import moe.tree.eduservice.entity.Course;
 import moe.tree.eduservice.entity.CourseDescription;
+import moe.tree.eduservice.entity.vo.CoursePublishVo;
 import moe.tree.eduservice.entity.vo.CourseVo;
 import moe.tree.eduservice.mapper.CourseMapper;
 import moe.tree.eduservice.service.CourseDescriptionService;
@@ -75,5 +76,11 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 		if(!descUpdateRes) {
 			throw new GuliException(20001, "课程信息修改失败");
 		}
+	}
+
+	@Override
+	public CoursePublishVo getCoursePublishVo(String courseId) {
+		CoursePublishVo coursePublishVo = baseMapper.getCoursePublishVo(courseId);
+		return coursePublishVo;
 	}
 }

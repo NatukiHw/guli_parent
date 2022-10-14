@@ -1,6 +1,7 @@
 package moe.tree.eduservice.controller;
 
 import moe.tree.commontuils.R;
+import moe.tree.eduservice.entity.vo.CoursePublishVo;
 import moe.tree.eduservice.entity.vo.CourseVo;
 import moe.tree.eduservice.service.ChapterService;
 import moe.tree.eduservice.service.CourseService;
@@ -38,5 +39,11 @@ public class CourseController {
 	public R updateCourse(@RequestBody CourseVo courseVo) {
 		courseService.updateCourse(courseVo);
 		return R.ok();
+	}
+
+	@GetMapping("/{courseId}/publisher")
+	public R getCoursePublishVo(@PathVariable String courseId) {
+		CoursePublishVo coursePublishVo = courseService.getCoursePublishVo(courseId);
+		return R.ok().data("course", coursePublishVo);
 	}
 }
