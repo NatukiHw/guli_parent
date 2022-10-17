@@ -1,5 +1,6 @@
 package moe.tree.eduservice.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import moe.tree.eduservice.entity.Video;
 import moe.tree.eduservice.mapper.VideoMapper;
 import moe.tree.eduservice.service.VideoService;
@@ -17,4 +18,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements VideoService {
 
+	@Override
+	public boolean removeVideoByCourseId(String courseId) {
+		QueryWrapper<Video> wrapper = new QueryWrapper<>();
+		wrapper.eq("course_id", courseId);
+		int cnt = baseMapper.delete(wrapper);
+		return cnt > 0;
+	}
 }

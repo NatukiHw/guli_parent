@@ -30,6 +30,10 @@ import lombok.Setter;
 @ApiModel(value = "Course对象", description = "课程")
 public class Course implements Serializable {
 
+    public static String COURSE_NORMAL = "Normal";
+    public static String COURSE_DRAFT = "Draft";
+
+
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("课程ID")

@@ -6,9 +6,11 @@ import moe.tree.eduservice.entity.CourseDescription;
 import moe.tree.eduservice.entity.vo.CoursePublishVo;
 import moe.tree.eduservice.entity.vo.CourseVo;
 import moe.tree.eduservice.mapper.CourseMapper;
+import moe.tree.eduservice.service.ChapterService;
 import moe.tree.eduservice.service.CourseDescriptionService;
 import moe.tree.eduservice.service.CourseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import moe.tree.eduservice.service.VideoService;
 import moe.tree.servicebase.exception.GuliException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,14 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
 	@Autowired
 	CourseDescriptionService courseDescriptionService;
+
+	@Autowired
+	VideoService videoSerivce;
+
+	@Autowired
+	ChapterService chapterService;
+
+
 
 	@Override
 	public String saveCourse(CourseVo courseVo) {
@@ -82,5 +92,23 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 	public CoursePublishVo getCoursePublishVo(String courseId) {
 		CoursePublishVo coursePublishVo = baseMapper.getCoursePublishVo(courseId);
 		return coursePublishVo;
+	}
+
+	@Override
+	public boolean publishCourse(String courseId) {
+		Course course = new Course();
+		course.setId(courseId);
+		course.setStatus(Course.COURSE_NORMAL);
+		int count = baseMapper.updateById(course);
+		return count > 0;
+	}
+
+	@Override
+	public boolean removeCourse(String courseId) {
+		videoSerivce.removeVideoByCourseId(courseId);
+		chapterService.removeChapterByCourseId(courseId);
+		courseDescriptionService.removeById(courseId);
+		baseMapper.deleteById(courseId);
+		return true;
 	}
 }
