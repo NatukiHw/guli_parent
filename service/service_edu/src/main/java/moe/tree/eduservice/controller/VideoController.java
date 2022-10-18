@@ -41,7 +41,11 @@ public class VideoController {
 
 	@DeleteMapping("/{videoId}")
 	public R deleteVideo(@PathVariable String videoId) {
-		videoService.removeById(videoId);
-		return R.ok();
+		boolean res = videoService.removeVideoById(videoId);
+		if(res) {
+			return R.ok();
+		} else {
+			return R.error();
+		}
 	}
 }

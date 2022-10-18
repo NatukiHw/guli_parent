@@ -1,10 +1,17 @@
 server:
   port: 8003
 spring:
-  application: service-vod
+  application:
+    name: service-vod
   profiles:
     active: dev
   servlet:
     multipart:
       max-file-size: 1024MB
       max-request-size: 1024MB
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    compatibility-verifier:
+      enabled: false

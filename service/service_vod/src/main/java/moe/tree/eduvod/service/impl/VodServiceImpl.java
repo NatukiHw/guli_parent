@@ -3,13 +3,20 @@ package moe.tree.eduvod.service.impl;
 import com.aliyun.vod.upload.impl.UploadVideoImpl;
 import com.aliyun.vod.upload.req.UploadStreamRequest;
 import com.aliyun.vod.upload.resp.UploadStreamResponse;
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.profile.DefaultProfile;
+import com.aliyuncs.vod.model.v20170321.DeleteVideoRequest;
+import com.aliyuncs.vod.model.v20170321.DeleteVideoResponse;
 import lombok.extern.slf4j.Slf4j;
 import moe.tree.eduvod.service.VodService;
 import moe.tree.eduvod.utils.ConstantPropertiesUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -41,5 +48,42 @@ public class VodServiceImpl implements VodService {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	public boolean deleteVideo(String videoId) {
+		DefaultAcsClient client = initVodClient();
+		DeleteVideoRequest request = new DeleteVideoRequest();
+		request.setVideoIds(videoId);
+		try {
+			client.getAcsResponse(request);
+			return true;
+		} catch (ClientException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public boolean deleteBatchVideos(List<String> videoIdList) {
+		DefaultAcsClient client = initVodClient();
+		DeleteVideoRequest request = new DeleteVideoRequest();
+		request.setVideoIds(StringUtils.join(videoIdList, ","));
+		try {
+			client.getAcsResponse(request);
+			return true;
+		} catch (ClientException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public DefaultAcsClient initVodClient() {
+		String accessKeyId = ConstantPropertiesUtil.ACCESS_KEY_ID;
+		String accessKeySecret = ConstantPropertiesUtil.ACCESS_KEY_SECRET;
+		String regionId = ConstantPropertiesUtil.REGION_ID;
+		DefaultProfile profile = DefaultProfile.getProfile(regionId, accessKeyId, accessKeySecret);
+		DefaultAcsClient client = new DefaultAcsClient(profile);
+		return client;
 	}
 }
