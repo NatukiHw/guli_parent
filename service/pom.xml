@@ -13,15 +13,11 @@
 	<packaging>pom</packaging>
 	
 	<dependencies>
-		<!--<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
-		</dependency> -->
-		<!-- hystrix依赖，主要是用 @HystrixCommand -->
-		<!--<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
-		</dependency> -->
+		<!--服务降级 熔断器-->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+		</dependency>
 		<!--服务注册-->
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>

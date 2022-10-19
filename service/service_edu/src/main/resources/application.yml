@@ -32,5 +32,7 @@ mybatis-plus:
       logic-delete-value: 1 # 逻辑已删除值(默认为 1)
       logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
   mapper-locations: classpath:moe/tree/eduservice/mapper/xml/*.xml
-
 # spring.mvc.pathmatch.matching-strategy=ant_path_matcher
+feign:
+  sentinel:
+    enabled: true

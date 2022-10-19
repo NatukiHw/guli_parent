@@ -105,10 +105,22 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
 	@Override
 	public boolean removeCourse(String courseId) {
-		videoSerivce.removeVideoByCourseId(courseId);
-		chapterService.removeChapterByCourseId(courseId);
-		courseDescriptionService.removeById(courseId);
-		baseMapper.deleteById(courseId);
+		boolean res = videoSerivce.removeVideoByCourseId(courseId);
+		if(!res) {
+			return false;
+		}
+		res = chapterService.removeChapterByCourseId(courseId);
+		if(!res) {
+			return false;
+		}
+		res = courseDescriptionService.removeById(courseId);
+		if(!res) {
+			return false;
+		}
+		int cnt = baseMapper.deleteById(courseId);
+		if(cnt <= 0) {
+			return false;
+		}
 		return true;
 	}
 }

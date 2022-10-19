@@ -63,6 +63,12 @@
 				</exclusions>
 				<version>2021.0.4.0</version>
 			</dependency>
+			<!-- https://mvnrepository.com/artifact/com.alibaba.cloud/spring-cloud-starter-alibaba-sentinel -->
+			<dependency>
+				<groupId>com.alibaba.cloud</groupId>
+				<artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+				<version>2021.1</version>
+			</dependency>
 			<!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-loadbalancer -->
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
