@@ -1,0 +1,16 @@
+server:
+  port: 8005
+spring:
+  application:
+    name: service-sms
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    compatibility-verifier:
+      enabled: false
+  mail:
+    default-encoding: UTF-8
+    protocol: smtp
