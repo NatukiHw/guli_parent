@@ -1,9 +1,8 @@
 package moe.tree.eduservice.service.impl;
 
-import com.fasterxml.jackson.databind.util.BeanUtil;
 import moe.tree.eduservice.entity.Course;
 import moe.tree.eduservice.entity.CourseDescription;
-import moe.tree.eduservice.entity.vo.CoursePublishVo;
+import moe.tree.commontuils.CoursePublishVo;
 import moe.tree.eduservice.entity.vo.CourseVo;
 import moe.tree.eduservice.mapper.CourseMapper;
 import moe.tree.eduservice.service.ChapterService;
@@ -14,7 +13,6 @@ import moe.tree.eduservice.service.VideoService;
 import moe.tree.servicebase.exception.GuliException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 /**

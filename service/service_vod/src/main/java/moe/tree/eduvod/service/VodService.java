@@ -11,4 +11,6 @@ public interface VodService {
 	public boolean deleteVideo(String videoId);
 
 	public boolean deleteBatchVideos(List<String> videoIdList);
+
+	public String getPlayAuth(String videoId);
 }

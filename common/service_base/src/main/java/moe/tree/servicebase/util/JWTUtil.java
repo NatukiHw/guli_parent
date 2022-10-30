@@ -9,6 +9,9 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import moe.tree.servicebase.exception.GuliException;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 public class JWTUtil {
@@ -66,7 +69,7 @@ public class JWTUtil {
 	 *
 	 * @param token 输入混淆payload后的token
 	 */
-	public static DecodedJWT verify(String token) throws Exception {
+	public static DecodedJWT verify(String token) {
 		// 如果token无效
 		if (token == null || "".equals(token)) {
 			throw new GuliException(20001, "用户状态验证失败");
@@ -135,6 +138,14 @@ public class JWTUtil {
 	 */
 	private static String reversePayload(String payload, Integer index) {
 		return payload.substring(index) + payload.substring(0, index);
+	}
+
+	public static String getMemberId(HttpServletRequest request) {
+		if(request == null) return null;
+		String token = request.getHeader("authorization");
+		DecodedJWT decodedJWT = JWTUtil.verify(token);
+		String id = decodedJWT.getClaim("id").asString();
+		return id;
 	}
 
 }

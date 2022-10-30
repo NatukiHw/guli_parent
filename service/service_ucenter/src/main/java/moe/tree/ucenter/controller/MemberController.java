@@ -1,14 +1,15 @@
 package moe.tree.ucenter.controller;
 
 import moe.tree.commontuils.R;
+import moe.tree.servicebase.util.JWTUtil;
+import moe.tree.commontuils.MemberProfile;
 import moe.tree.ucenter.entity.vo.MemberLoginVo;
 import moe.tree.ucenter.entity.vo.MemberRegisterVo;
 import moe.tree.ucenter.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>
@@ -36,4 +37,18 @@ public class MemberController {
 		memberService.register(memberRegisterVo);
 		return R.ok();
 	}
+
+	@GetMapping("/profile")
+	public R getMemberProfile(HttpServletRequest request) {
+		String id = JWTUtil.getMemberId(request);
+		MemberProfile profile = memberService.getProfile(id);
+		return R.ok().data("profile", profile);
+	}
+
+	@GetMapping("/profile/{userId}")
+	public R getMemberProfile(@PathVariable String userId) {
+		MemberProfile profile = memberService.getProfile(userId);
+		return R.ok().data("profile", profile);
+	}
+
 }

@@ -2,16 +2,17 @@ package moe.tree.ucenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import moe.tree.servicebase.util.JWTUtil;
 import moe.tree.servicebase.exception.GuliException;
 import moe.tree.ucenter.entity.Member;
+import moe.tree.commontuils.MemberProfile;
 import moe.tree.ucenter.entity.vo.MemberLoginVo;
 import moe.tree.ucenter.entity.vo.MemberRegisterVo;
 import moe.tree.ucenter.mapper.MemberMapper;
 import moe.tree.ucenter.service.MemberService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.collections4.map.HashedMap;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -32,7 +33,7 @@ import java.util.Map;
 public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> implements MemberService {
 
 	@Value("${ucenter.defaultAvatar}")
-	public static String DEFAULT_AVATAR;
+	public String DEFAULT_AVATAR;
 
 	@Autowired
 	private RedisTemplate redisTemplate;
@@ -61,7 +62,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
 		//Get token
 		Map<String, Object> payload = new HashedMap<>();
 		payload.put("username", username);
-		payload.put("nickname", member.getNickname());
+		payload.put("id", member.getId());
 		String token = JWTUtil.getToken(payload);
 		return token;
 	}
@@ -96,5 +97,16 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
 		member.setAvatar(DEFAULT_AVATAR);
 		member.setIsDisabled((byte) 0);
 		baseMapper.insert(member);
+	}
+
+	@Override
+	public MemberProfile getProfile(String id) {
+		if(id == null) {
+			return null;
+		}
+		Member member = baseMapper.selectById(id);
+		MemberProfile memberProfile = new MemberProfile();
+		BeanUtils.copyProperties(member, memberProfile);
+		return memberProfile;
 	}
 }

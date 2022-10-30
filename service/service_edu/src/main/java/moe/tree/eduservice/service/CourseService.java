@@ -2,7 +2,7 @@ package moe.tree.eduservice.service;
 
 import moe.tree.eduservice.entity.Course;
 import com.baomidou.mybatisplus.extension.service.IService;
-import moe.tree.eduservice.entity.vo.CoursePublishVo;
+import moe.tree.commontuils.CoursePublishVo;
 import moe.tree.eduservice.entity.vo.CourseVo;
 
 /**

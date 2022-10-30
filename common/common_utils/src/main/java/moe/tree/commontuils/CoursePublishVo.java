@@ -1,4 +1,4 @@
-package moe.tree.eduservice.entity.vo;
+package moe.tree.commontuils;
 
 import lombok.Data;
 

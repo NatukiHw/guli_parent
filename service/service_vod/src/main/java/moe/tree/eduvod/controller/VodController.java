@@ -39,4 +39,11 @@ public class VodController {
 		}
 		return R.ok();
 	}
+
+	@GetMapping("/{videoId}")
+	public R getVideoPlayAuth(@PathVariable String videoId) {
+		String playAuth = vodService.getPlayAuth(videoId);
+		return R.ok().data("playAuth", playAuth);
+	}
+
 }

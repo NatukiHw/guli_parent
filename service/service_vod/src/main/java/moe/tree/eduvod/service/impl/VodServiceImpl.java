@@ -8,6 +8,8 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.vod.model.v20170321.DeleteVideoRequest;
 import com.aliyuncs.vod.model.v20170321.DeleteVideoResponse;
+import com.aliyuncs.vod.model.v20170321.GetVideoPlayAuthRequest;
+import com.aliyuncs.vod.model.v20170321.GetVideoPlayAuthResponse;
 import lombok.extern.slf4j.Slf4j;
 import moe.tree.eduvod.service.VodService;
 import moe.tree.eduvod.utils.ConstantPropertiesUtil;
@@ -75,6 +77,24 @@ public class VodServiceImpl implements VodService {
 		} catch (ClientException e) {
 			e.printStackTrace();
 			return false;
+		}
+	}
+
+	@Override
+	public String getPlayAuth(String videoId) {
+		if(videoId == null) {
+			return null;
+		}
+		DefaultAcsClient client = initVodClient();
+		GetVideoPlayAuthRequest request = new GetVideoPlayAuthRequest();
+		request.setVideoId(videoId);
+		try {
+			GetVideoPlayAuthResponse response = client.getAcsResponse(request);
+			String playAuth = response.getPlayAuth();
+			return playAuth;
+		} catch (ClientException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 

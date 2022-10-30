@@ -2,7 +2,7 @@ package moe.tree.eduservice.mapper;
 
 import moe.tree.eduservice.entity.Course;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import moe.tree.eduservice.entity.vo.CoursePublishVo;
+import moe.tree.commontuils.CoursePublishVo;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
