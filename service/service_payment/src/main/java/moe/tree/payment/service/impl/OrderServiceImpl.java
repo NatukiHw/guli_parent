@@ -17,9 +17,11 @@ import moe.tree.payment.client.CourseClient;
 import moe.tree.payment.client.MemberClient;
 import moe.tree.payment.entity.AliBean;
 import moe.tree.payment.entity.Order;
+import moe.tree.payment.entity.PayLog;
 import moe.tree.payment.mapper.OrderMapper;
 import moe.tree.payment.service.OrderService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import moe.tree.payment.service.PayLogService;
 import moe.tree.payment.util.AlipayConstantPropertiesUtil;
 import moe.tree.payment.util.OrderNoUtil;
 import moe.tree.servicebase.exception.GuliException;
@@ -28,6 +30,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -46,6 +51,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
 	@Autowired
 	private CourseClient courseClient;
+
+	@Autowired
+	private PayLogService payLogService;
 
 	@Override
 	public String createOrder(String memberId, String courseId) {
@@ -100,7 +108,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 		aliBean.setTotal_amount(order.getTotalFee().toString());
 		aliBean.setBody(order.toString());
 
-		AlipayClient alipayClient = getAlipayClientWithAlipayPublicKey();
+		AlipayClient alipayClient = getAlipayClientWithAppPublicKey();
 
 		String returnUrl = AlipayConstantPropertiesUtil.RETURN_URL;
 		String notifyUrl = AlipayConstantPropertiesUtil.NOTIFY_URL;
@@ -132,7 +140,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 		return result;
 	}
 
-	public String getOrderStatusWithAlipay(String orderNo) {
+	public PayLog getPayLogWithAlipay(String orderNo) {
 		AlipayClient alipayClient = getAlipayClientWithAlipayPublicKey();
 		AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
 		Map<String, Object> map = new HashedMap<>();
@@ -148,11 +156,47 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 		request.setBizContent(bizContent);
 		try {
 			AlipayTradeQueryResponse response = alipayClient.execute(request);
-			return response.getTradeStatus();
+			String status = response.getTradeStatus();
+			if(status == null) {
+				return null;
+			}
+			PayLog payLog = new PayLog();
+			payLog.setOrderNo(orderNo);
+			payLog.setTradeState(status);
+			Date sendPayDate = response.getSendPayDate();
+			if(sendPayDate != null) {
+				ZoneId zoneId = ZoneId.systemDefault();
+				LocalDateTime payTime = sendPayDate.toInstant().atZone(zoneId).toLocalDateTime();
+				payLog.setPayTime(payTime);
+			}
+			payLog.setTotalFee(new BigDecimal(response.getTotalAmount()));
+			payLog.setTransactionId(response.getTradeNo());
+			payLog.setPayType((byte) 2);
+			return payLog;
 		} catch (AlipayApiException e) {
 			e.printStackTrace();
-			throw new GuliException(20001, "查询订单状态失败");
+			return null;
 		}
+	}
+
+	private Byte alipayStatusToStatusVal(String status) {
+		if(status == null) return null;
+		Byte statusVal = null;
+		switch (status) {
+			case "WAIT_BUYER_PAY":
+				statusVal = AliBean.WAIT_BUYER_PAY;
+				break;
+			case "TRADE_CLOSED":
+				statusVal = AliBean.TRADE_CLOSED;
+				break;
+			case "TRADE_SUCCESS":
+				statusVal = AliBean.TRADE_SUCCESS;
+				break;
+			case "TRADE_FINISHED":
+				statusVal = AliBean.TRADE_FINISHED;
+				break;
+		}
+		return statusVal;
 	}
 
 	@Override
@@ -164,27 +208,25 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 			throw new GuliException(20001, "订单不存在");
 		}
 		if(order.getStatus() == AliBean.WAIT_BUYER_PAY) {
-			String status = getOrderStatusWithAlipay(orderNo);
-			if(status == null) {
+			PayLog payLog = getPayLogWithAlipay(orderNo);
+			if(payLog == null) {
 				return order;
 			}
-			byte statusVal = AliBean.WAIT_BUYER_PAY;
-			switch (status) {
-				case "TRADE_CLOSED":
-					statusVal = AliBean.TRADE_CLOSED;
-					break;
-				case "TRADE_SUCCESS":
-					statusVal = AliBean.TRADE_SUCCESS;
-					break;
-				case "TRADE_FINISHED":
-					statusVal = AliBean.TRADE_FINISHED;
-					break;
+			Byte statusVal = alipayStatusToStatusVal(payLog.getTradeState());
+			if(statusVal == null || statusVal.byteValue() == AliBean.WAIT_BUYER_PAY) {
+				return order;
 			}
 			Order newOrder = new Order();
 			newOrder.setId(order.getId());
 			newOrder.setStatus(statusVal);
-			int res = baseMapper.updateById(newOrder);
-			if(res > 0) {
+			if(statusVal.byteValue() == AliBean.TRADE_SUCCESS || statusVal.byteValue() == AliBean.TRADE_FINISHED) {
+				boolean res = payLogService.save(payLog);
+				if (!res) {
+					return order;
+				}
+			}
+			int resVal = baseMapper.updateById(newOrder);
+			if(resVal > 0) {
 				order.setStatus(statusVal);
 			}
 		}

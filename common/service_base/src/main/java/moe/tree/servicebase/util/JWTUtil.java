@@ -143,6 +143,7 @@ public class JWTUtil {
 	public static String getMemberId(HttpServletRequest request) {
 		if(request == null) return null;
 		String token = request.getHeader("authorization");
+		if(token == null) return null;
 		DecodedJWT decodedJWT = JWTUtil.verify(token);
 		String id = decodedJWT.getClaim("id").asString();
 		return id;

@@ -2,8 +2,10 @@ package moe.tree.payment.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import moe.tree.commontuils.R;
+import moe.tree.payment.entity.AliBean;
 import moe.tree.payment.entity.Order;
 import moe.tree.payment.service.OrderService;
+import moe.tree.servicebase.exception.GuliException;
 import moe.tree.servicebase.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -47,5 +49,21 @@ public class OrderController {
 		return result;
 	}
 
-
+	@GetMapping("/courses/{courseId}")
+	public R isCoursePaid(HttpServletRequest request, @PathVariable String courseId) {
+		String memberId = JWTUtil.getMemberId(request);
+		if(memberId == null) {
+			throw new GuliException(20001, "获取用户登录状态失败");
+		}
+		QueryWrapper<Order> wrapper = new QueryWrapper<>();
+		wrapper.eq("course_id", courseId);
+		wrapper.eq("member_id", memberId);
+		wrapper.eq("status", AliBean.TRADE_SUCCESS);
+		long count = orderService.count(wrapper);
+		boolean isPaid = false;
+		if(count > 0) {
+			isPaid = true;
+		}
+		return R.ok().data("isPaid", isPaid);
+	}
 }
