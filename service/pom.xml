@@ -124,6 +124,7 @@
 		<module>service_sms</module>
 		<module>service_ucenter</module>
 		<module>service_payment</module>
+		<module>service_statistics</module>
 	</modules>
 
 	<build>

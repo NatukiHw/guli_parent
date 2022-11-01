@@ -16,9 +16,11 @@ import moe.tree.ucenter.entity.vo.MemberRegisterVo;
  */
 public interface MemberService extends IService<Member> {
 
-	public String login(MemberLoginVo memberLoginVo);
+	String login(MemberLoginVo memberLoginVo);
 
-	public void register(MemberRegisterVo memberRegisterVo);
+	void register(MemberRegisterVo memberRegisterVo);
 
-	public MemberProfile getProfile(String id);
+	MemberProfile getProfile(String id);
+
+	Integer countDailyRegister(String day);
 }

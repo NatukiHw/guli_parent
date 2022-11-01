@@ -109,4 +109,9 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
 		BeanUtils.copyProperties(member, memberProfile);
 		return memberProfile;
 	}
+
+	@Override
+	public Integer countDailyRegister(String date) {
+		return baseMapper.countDailyRegister(date);
+	}
 }

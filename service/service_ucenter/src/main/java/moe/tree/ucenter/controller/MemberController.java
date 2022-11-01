@@ -51,4 +51,10 @@ public class MemberController {
 		return R.ok().data("profile", profile);
 	}
 
+	@GetMapping("/register/statistics/{day}")
+	public R getDailyRegisterCount(@PathVariable String day) {
+		Integer count = memberService.countDailyRegister(day);
+		return R.ok().data("count", count);
+	}
+
 }

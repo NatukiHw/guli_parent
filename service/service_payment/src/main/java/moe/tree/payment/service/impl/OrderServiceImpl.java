@@ -95,50 +95,50 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
 
 
-	@Override
-	public String payOrderWithAlipay(String orderNo) {
-		Order order = getOrderByOrderNo(orderNo);
-		if(order == null) {
-			throw new GuliException(20001, "订单不存在");
-		}
-
-		AliBean aliBean = new AliBean();
-		aliBean.setOut_trade_no(order.getOrderNo());
-		aliBean.setSubject(order.getCourseTitle());
-		aliBean.setTotal_amount(order.getTotalFee().toString());
-		aliBean.setBody(order.toString());
-
-		AlipayClient alipayClient = getAlipayClientWithAppPublicKey();
-
-		String returnUrl = AlipayConstantPropertiesUtil.RETURN_URL;
-		String notifyUrl = AlipayConstantPropertiesUtil.NOTIFY_URL;
-
-		AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
-		// 页面跳转同步通知页面路径
-		alipayRequest.setReturnUrl(returnUrl);
-		// 服务器异步通知页面路径
-		alipayRequest.setNotifyUrl(notifyUrl);
-		// 封装参数
-		ObjectMapper mapper = new ObjectMapper();
-		String bizContent = null;
-		try {
-			bizContent = mapper.writeValueAsString(aliBean);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			throw new GuliException(20001, "生成支付宝订单失败");
-		}
-		alipayRequest.setBizContent(bizContent);
-		// 3、请求支付宝进行付款，并获取支付结果
-		String result = null;
-		try {
-			result = alipayClient.pageExecute(alipayRequest).getBody();
-		} catch (AlipayApiException e) {
-			e.printStackTrace();
-			throw new GuliException(20001, "生成支付宝订单失败");
-		}
-		// 返回付款信息
-		return result;
+@Override
+public String payOrderWithAlipay(String orderNo) {
+	Order order = getOrderByOrderNo(orderNo);
+	if(order == null) {
+		throw new GuliException(20001, "订单不存在");
 	}
+
+	AliBean aliBean = new AliBean();
+	aliBean.setOut_trade_no(order.getOrderNo());
+	aliBean.setSubject(order.getCourseTitle());
+	aliBean.setTotal_amount(order.getTotalFee().toString());
+	aliBean.setBody(order.toString());
+
+	AlipayClient alipayClient = getAlipayClientWithAppPublicKey();
+
+	String returnUrl = AlipayConstantPropertiesUtil.RETURN_URL;
+	String notifyUrl = AlipayConstantPropertiesUtil.NOTIFY_URL;
+
+	AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
+	// 页面跳转同步通知页面路径
+	alipayRequest.setReturnUrl(returnUrl);
+	// 服务器异步通知页面路径
+	alipayRequest.setNotifyUrl(notifyUrl);
+	// 封装参数
+	ObjectMapper mapper = new ObjectMapper();
+	String bizContent = null;
+	try {
+		bizContent = mapper.writeValueAsString(aliBean);
+	} catch (JsonProcessingException e) {
+		e.printStackTrace();
+		throw new GuliException(20001, "生成支付宝订单失败");
+	}
+	alipayRequest.setBizContent(bizContent);
+	// 3、请求支付宝进行付款，并获取支付结果
+	String result = null;
+	try {
+		result = alipayClient.pageExecute(alipayRequest).getBody();
+	} catch (AlipayApiException e) {
+		e.printStackTrace();
+		throw new GuliException(20001, "生成支付宝订单失败");
+	}
+	// 返回付款信息
+	return result;
+}
 
 	public PayLog getPayLogWithAlipay(String orderNo) {
 		AlipayClient alipayClient = getAlipayClientWithAlipayPublicKey();
