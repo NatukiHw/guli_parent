@@ -1,0 +1,54 @@
+server:
+  port: 9020
+spring:
+  application:
+    name: service-gateway
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    compatibility-verifier:
+      enabled: false
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: service-acl
+          uri: lb://service-acl
+          predicates:
+            - Path=/*/acl/**
+        - id: service-cms
+          uri: lb://service-cms
+          predicates:
+            - Path=/educms/**
+        - id: service-edu
+          uri: lb://service-edu
+          predicates:
+            - Path=/eduservice/**
+        - id: service-oss
+          uri: lb://service-oss
+          predicates:
+            - Path=/eduoss/**
+        - id: service-payment
+          uri: lb://service-payment
+          predicates:
+            - Path=/payment/**
+        - id: service-sms
+          uri: lb://service-sms
+          predicates:
+            - Path=/edusms/**
+        - id: service-statistics
+          uri: lb://service-statistics
+          predicates:
+            - Path=/statistics/**
+        - id: service-ucenter
+          uri: lb://service-ucenter
+          predicates:
+            - Path=/ucenter/**
+        - id: service-vod
+          uri: lb://service-vod
+          predicates:
+            - Path=/eduvod/**

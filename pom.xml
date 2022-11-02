@@ -216,5 +216,6 @@
 	<modules>
 		<module>service</module>
 		<module>common</module>
+		<module>infrastructure</module>
 	</modules>
 </project>
